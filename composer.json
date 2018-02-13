@@ -1,0 +1,15 @@
+{
+    "name": "uvealsnow/conekta-cashier",
+    "description": "A package for Laravel 5.5.x that streamlines the Conekta payment process",
+    "type": "library",
+    "require": {
+        "conekta/conekta-php": "^4.0",
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "UvealSnow",
+            "email": "kevhah92@gmail.com"
+        }
+    ]
+}
