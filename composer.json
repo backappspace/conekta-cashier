@@ -11,5 +11,12 @@
             "name": "UvealSnow",
             "email": "kevhah92@gmail.com"
         }
-    ]
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "UvealSnow\\ConektaCashier\\ConektaCashierProvider"
+            ]
+        }
+    }
 }
