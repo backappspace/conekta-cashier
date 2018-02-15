@@ -12,6 +12,11 @@
             "email": "kevhah92@gmail.com"
         }
     ],
+    "autoload": {
+        "psr-4": {
+            "UvealSnow\\ConektaCashier\\": "src/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
