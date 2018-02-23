@@ -103,7 +103,7 @@ class Subscription extends Model
      */
     public function onGracePeriod()
     {
-        return (bool) now()->lessThan($this->ends_at) && $this->status === 'cancelled'
+        return (bool) now()->lessThan($this->ends_at) && $this->status === 'cancelled';
     }
 
     /**
@@ -264,17 +264,38 @@ class Subscription extends Model
         return $this;
     }
 
-    /*
-     * Creates a lineItem for the current subscription
+     /**
+     * Creates a lineItem array for the current subscription
      *
      * @return array
-    */
+     */
     public function asLineItem()
     {
         return [
             "name" => $this->name,
-            "unit_price" => $this->unit_price,
-            "quantity" => $this->quantity,
+            "unit_price" => intval($this->unit_price),
+            "quantity" => intval($this->quantity),
         ];
+    }
+
+     /**
+     * Updates subscription end
+     *
+     * @return array
+     */
+    public function updateSubscriptionEnd()
+    {
+        return true;
+    }
+
+     /**
+     * Checks if the subscription is still valid
+     *
+     * @return bool
+     */
+    public function isValid()
+    {
+        return (bool) ($this->onTrial() || $this->onGracePeriod()) ||
+            ($this->status === 'active' && now()->lt($this->ends_at->addDays(config('services.conekta.days_of_tolerance', 5))));
     }
 }

@@ -270,4 +270,14 @@ trait ConektaBillable
 
         return config('services.conekta.private');
     }
+
+    /**
+     * Returns true if user is currently on generic trial
+     *
+     * @return bool
+     */
+    public function onGenericTrial()
+    {
+        return (bool) $this->trial_ends_at && now()->lt($this->trial_ends_at);
+    }
 }

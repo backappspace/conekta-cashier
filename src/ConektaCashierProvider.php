@@ -13,8 +13,15 @@ class ConektaCashierProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'cashier');
+
         $this->registerRoutes();
+
         $this->registerMigrations();
+
+        $this->commands([
+            Console\CheckSubscriptions::class,
+        ]);
     }
 
     /**

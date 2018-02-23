@@ -3,7 +3,8 @@
     "description": "A package for Laravel 5.5.x that streamlines the Conekta payment process",
     "type": "library",
     "require": {
-        "conekta/conekta-php": "^4.0"
+        "conekta/conekta-php": "^4.0",
+        "barryvdh/laravel-dompdf": "^0.8.2"
     },
     "license": "MIT",
     "authors": [
