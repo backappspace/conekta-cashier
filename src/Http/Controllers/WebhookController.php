@@ -15,6 +15,7 @@ class WebhookController extends Controller
         DB::table('test')->insert([
             'data' => $request->data
         ]);
+        //
     }
 
     public function test()
