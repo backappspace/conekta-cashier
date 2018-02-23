@@ -18,6 +18,7 @@ class ModifyUsersTableAddUsefulTraits extends Migration
             $table->string('conekta_client_id')->nullable();
             $table->string('card_brand', 20)->nullable();
             $table->string('card_last_4', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
         });
     }
 
@@ -29,7 +30,7 @@ class ModifyUsersTableAddUsefulTraits extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['conekta_client_id', 'card_brand', 'card_last_4']);
+            $table->dropColumn(['conekta_client_id', 'card_brand', 'card_last_4', 'trial_ends_at']);
         });
     }
 }

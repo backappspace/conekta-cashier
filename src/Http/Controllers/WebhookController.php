@@ -12,7 +12,7 @@ class WebhookController extends Controller
 {
     public function orderPaid(Request $request)
     {
-        return true;
+        echo $request->toJson();
     }
 
     public function test()
