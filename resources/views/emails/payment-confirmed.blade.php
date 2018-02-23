@@ -1,12 +1,14 @@
 @component('mail::message')
-# Introduction
+# Hola {{ $user->name }}.
 
-The body of your message.
+Te informamos que tu pago con número de serie {{ $order_id }} ha sido procesado.
 
-@component('mail::button', ['url' => ''])
-Button Text
-@endcomponent
+Tu subscripción se ha actualizado.
 
-Thanks,<br>
+Adjunto en este correo podrás encontrar tu comprobante de pago, es necesario que lo conserves para cualquiér aclaración.
+
+# # Tu nueva fecha de pago es {{ $payment_date }}
+
+Saludos,<br>
 {{ config('app.name') }}
 @endcomponent

@@ -1,7 +1,7 @@
 @component('mail::message')
 # Hola, {{ $user->name }}
 
-Has recibido este correo por que estás suscrito a Cupongo.
+Has recibido este correo por que {{ $concept }}.
 
 Adjunto en este correo podrás encontar tu ficha para depositar tu mensualidad.
 
