@@ -74,30 +74,6 @@ class Order extends Model
     }
 
     /**
-     * Creates the Conekta Order linked to this model
-     *
-     * @return \Conekta\Order
-     */
-    // public function createAsConektaOrder()
-    // {
-    //     $customer = $this->owner->asConektaCustomer();
-
-    //     $order = ConektaOrder::create([
-    //         "currency" => config("services.conekta.currency", 'MXN'),
-    //         "customer_info" => [
-    //             "customer_id" => $customer->id,
-    //         ],
-    //         "line_items" => $this->productsAsLineItems(),
-    //     ]);
-
-    //     $this->conekta_order = $order->id;
-
-    //     $this->save();
-
-    //     return $order;
-    // }
-
-    /**
      * Returns the Conekta Order linked to this model
      *
      * @return \Conekta\Order|void

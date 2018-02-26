@@ -28,14 +28,7 @@ class CreateOrdersTable extends Migration
                 'payment_method',
                 ['default', 'card', 'oxxo_cash', 'spei']
             )->default('default');
-            $table->enum(
-                'status',
-                [
-                    'delivered', 'in_transit',
-                    'awaiting_payment', 'payment_bounced',
-                    'cancelled', 'refunded'
-                ]
-            );
+            $table->string('status');
             $table->string('tracking_number')->nullable();
             $table->timestamp('estimated_delivery')->nullable();
             $table->timestamps();

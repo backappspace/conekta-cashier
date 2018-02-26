@@ -309,4 +309,31 @@ class Subscription extends Model
     {
         return (bool) $this->status === 'active' && now()->gte($this->ends_at);
     }
+
+    /**
+     * Returns the next ends_at date for this subscription
+     *
+     * @param boolean $now = true
+     * @return Carbon $ends_at
+     */
+    public function getNextEndDate($now = true)
+    {
+        if ($now) {
+            $date = now();
+        } else {
+            $date = $this->ends_at;
+        }
+
+        if ($this->period_unit === 'day') {
+            $ends_at = $date->addDays($this->period_amount);
+        } elseif ($this->period_unit === 'week') {
+            $ends_at = $date->addWeeks($this->period_amount);
+        } elseif ($this->period_unit === 'month') {
+            $ends_at = $date->addMonths($this->period_amount);
+        } elseif ($this->period_unit === 'year') {
+            $ends_at = $date->addYears($this->period_amount);
+        }
+
+        return $ends_at;
+    }
 }

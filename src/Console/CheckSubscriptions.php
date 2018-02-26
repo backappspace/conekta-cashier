@@ -2,8 +2,13 @@
 
 namespace UvealSnow\ConektaCashier\Console;
 
+use PDF;
 use App\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use UvealSnow\ConektaCashier\Order;
+use Illuminate\Support\Facades\Mail;
+use UvealSnow\ConektaCashier\Mail\ConektaCharge;
 
 class CheckSubscriptions extends Command
 {
@@ -45,29 +50,46 @@ class CheckSubscriptions extends Command
 
                 foreach ($user->subscriptions as $subscription) {
                     $lineItems = [];
+                    $attachedSubscriptions = [];
 
                     if ($subscription->shouldBeCharged()) {
                         $lineItems[] = $subscription->asLineItem();
+                        $attachedSubscriptions[] = $subscription->id;
                     }
+                }
 
-                    if (count($lineItems) > 0) {
-                        $order = $user->createConektaOrder($lineItems);
+                if (count($lineItems) > 0) {
+                    // Create Conekta Order
+                    $order = $user->createConektaOrder($lineItems);
 
-                        $charge = $user->chargeOrder($order, [
-                            'type' => 'spei'
-                        ]);
+                    // Retrieve the created charge object
+                    $charge = $user->chargeOrder($order, [
+                        'type' => 'spei'
+                    ]);
 
-                        // make temporary path
-                        // $temp = "$charge->id.pdf";
+                    // Add order to DB
+                    $db_order = new Order();
 
-                        // make and save charge pdf
-                        // PDF::loadView('cashier.stub', [
-                            // 'charge' => $charge
-                        // ])->save($temp);
+                    $db_order->fillOrder($order);
+                    $user->orders()->save($db_order);
 
-                        // create and send email to user
-                        // Mail::to($user)->queue(new ConektaCharge($user, $charge, $file));
-                    }
+                    $db_order->subscriptions()->attach($attachedSubscriptions);
+
+                    // Update subscriptions
+                    DB::table('subcriptions')
+                        ->whereIn('id', $attachedSubscriptions)
+                        ->update(['conekta_order_id' => $order->id]);
+
+                    // make temporary path
+                    $temp = public_path() . "/tmp/$charge->id.pdf";
+
+                    // make and save charge pdf
+                    PDF::loadView('cashier::stub', [
+                        'charge' => $charge,
+                    ])->save($temp);
+
+                    // create and send email to user
+                    Mail::to($user)->queue(new ConektaCharge($user, $charge, $file));
                 }
             }
         });
