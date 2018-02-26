@@ -4,6 +4,7 @@ namespace UvealSnow\ConektaCashier;
 
 use Conekta\Order as ConektaOrder;
 use Illuminate\Database\Eloquent\Model;
+use UvealSnow\ConektaCashier\Order;
 
 class Order extends Model
 {
@@ -50,7 +51,7 @@ class Order extends Model
      */
     public function products()
     {
-        $model = getenv('CONEKTA_PRODUCT') ?: config('services.conekta.product', 'App\\Product');
+        $model = getenv('CONEKTA_PRODUCT') ?: config('services.conekta.product', 'Product');
 
         $model = new $model;
 
@@ -105,5 +106,30 @@ class Order extends Model
     public function asConektaOrder()
     {
         return ConektaOrder::find($this->conekta_order);
+    }
+
+    /**
+     * Fills the a Conekta Order to be saved to the Database
+     *
+     * @param Conekta\Order $order
+     * @return void
+     */
+    public function fillOrder(Order $order)
+    {
+        $this->fill([
+            'conekta_order' => $order->id,
+            'currency' => config('services.conekta.currency', 'MXN'),
+            'amount' => $order->amount,
+            'tax' => $order->tax_lines->total,
+            'shipping_cost' => $order->shipping_lines->total,
+            'discount' => $order->discount_lines->total,
+            'monthly_installments' => count($order->charges) > 0 ? $order->charges->monthly_installments : 0,
+            'payment_method' => count($order->charges) > 0 ? $order->charges[0]->payment_method->type : 'default',
+            'status' => count($order->charges) > 0 ? $order->charges[0]->status : 'unknown',
+            'tracking_number' => null,
+            'estimated_delivery' => null,
+        ]);
+
+        return $this;
     }
 }

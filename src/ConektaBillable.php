@@ -292,7 +292,7 @@ trait ConektaBillable
         $lineItems = [];
 
         foreach ($this->subscriptions as $subscription) {
-            if (($onlyDue && $subscription->shouldBeCharged()) || $onlyDue) {
+            if (($onlyDue && $subscription->shouldBeCharged()) || !$onlyDue) {
                 $lineItems[] = $subscription->asLineItem();
             }
         }
