@@ -14,17 +14,19 @@ class WebhookController extends Controller
 {
     public function orderPaid(Request $request)
     {
-        // DB::table('tests')->insert([
-        //     'data' => json_encode($request->all())
-        // ]);
+        DB::table('tests')->insert([
+            'data' => json_encode($request->data)
+        ]);
 
-        if ($request->type === 'charge.paid') {
-            $order = Order::where('conekta_order', $request->data->object->order_id)->firstOrFail();
+        if ($request->type === 'order.paid') {
+            $order = Order::where('conekta_order', $request['data']['object']['id'])->firstOrFail();
+            $order->status = $request['data']['object']['charges']['data'][0]['status'];
+            $order->save();
 
             if ($order->subscriptions->count() > 0) {
                 foreach ($order->subscriptions as $subscription) {
                     $subscription->fill([
-                        'conekta_order_id' => $request->data->object->order_id,
+                        'conekta_order_id' => $request['data']['object']['id'],
                         'ends_at' => $subscription->getNextEndDate()
                     ])->save();
                 }
