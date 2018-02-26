@@ -284,14 +284,17 @@ trait ConektaBillable
     /**
      * Returns an array with the subscriptions as line items
      *
+     * @param boolean $onlyDue = false
      * @return array $lineItems
      */
-    public function subscriptionsAsLineItems()
+    public function subscriptionsAsLineItems($onlyDue = false)
     {
         $lineItems = [];
 
         foreach ($this->subscriptions as $subscription) {
-            $lineItems[] = $subscription->asLineItem();
+            if (($onlyDue && $subscription->shouldBeCharged()) || $onlyDue) {
+                $lineItems[] = $subscription->asLineItem();
+            }
         }
 
         return $lineItems;

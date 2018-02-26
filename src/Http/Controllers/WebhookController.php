@@ -2,6 +2,7 @@
 
 namespace UvealSnow\ConektaCashier\Controllers;
 
+use DB;
 use PDF;
 use App\User;
 use Illuminate\Http\Request;
