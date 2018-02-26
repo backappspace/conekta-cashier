@@ -280,4 +280,20 @@ trait ConektaBillable
     {
         return (bool) $this->trial_ends_at && now()->lt($this->trial_ends_at);
     }
+
+    /**
+     * Returns an array with the subscriptions as line items
+     *
+     * @return array $lineItems
+     */
+    public function subscriptionsAsLineItems()
+    {
+        $lineItems = [];
+
+        foreach ($this->subscriptions as $subscription) {
+            $lineItems[] = $subscription->asLineItem();
+        }
+
+        return $lineItems;
+    }
 }
