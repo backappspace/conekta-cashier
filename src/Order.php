@@ -50,7 +50,7 @@ class Order extends Model
      */
     public function products()
     {
-        $model = getenv('CONEKTA_PRODUCT') ?: config('services.conekta.product', 'Product');
+        $model = getenv('CONEKTA_PRODUCT') ?: config('services.conekta.product', 'UvealSnow\\ConektaCashier\\Product');
 
         $model = new $model;
 
@@ -65,7 +65,7 @@ class Order extends Model
      */
     public function subscriptions()
     {
-        $model = getenv('CONEKTA_SUBSCRIPTION') ?: config('services.conekta.subscription', 'Subscription');
+        $model = getenv('CONEKTA_SUBSCRIPTION') ?: config('services.conekta.subscription', 'UvealSnow\\ConektaCashier\\Subscription');
 
         $model = new $model;
 

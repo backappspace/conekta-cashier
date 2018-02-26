@@ -322,10 +322,17 @@ class Subscription extends Model
             $date = $this->ends_at;
         }
 
-        return (bool) $this->orders()
-                        ->whereBetween('created_at', [$date, $this->getNextEndDate(false, $date)])
-                        ->get()
-                        ->count() > 0;
+        $answer = $this->orders()
+                ->whereBetween('created_at', [$date, $this->getNextEndDate(false, $date)])
+                ->get()
+                ->count() > 0;
+
+        // checks if the order is not stale
+        if ($answer) {
+            //
+        }
+
+        return $answer;
     }
 
     /**
@@ -339,7 +346,7 @@ class Subscription extends Model
         if ($now) {
             $date = now();
         } elseif ($special) {
-            $date = $special;
+            $date = $special->copy();
         } else {
             $date = $this->ends_at;
         }

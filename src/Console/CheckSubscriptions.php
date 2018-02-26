@@ -59,6 +59,9 @@ class CheckSubscriptions extends Command
                 }
 
                 if (count($lineItems) > 0) {
+                    // init conekta
+                    $user->initConekta();
+
                     // Create Conekta Order
                     $order = $user->createConektaOrder($lineItems);
 
@@ -73,10 +76,16 @@ class CheckSubscriptions extends Command
                     $db_order->fillOrder($order);
                     $user->orders()->save($db_order);
 
-                    $db_order->subscriptions()->attach($attachedSubscriptions);
+                    foreach ($lineItems as $i => $item) {
+                        $db_order->subscriptions()->attach($attachedSubscriptions[$i], [
+                            'quantity' => $item['quantity'],
+                            'unit_price' => $item['unit_price'],
+                            'details' => $item['name'],
+                        ]);
+                    }
 
                     // Update subscriptions
-                    DB::table('subcriptions')
+                    DB::table('subscriptions')
                         ->whereIn('id', $attachedSubscriptions)
                         ->update(['conekta_order_id' => $order->id]);
 
@@ -89,7 +98,12 @@ class CheckSubscriptions extends Command
                     ])->save($temp);
 
                     // create and send email to user
-                    Mail::to($user)->queue(new ConektaCharge($user, $charge, $file));
+                    Mail::to($user)->queue(new ConektaCharge(
+                        $user,
+                        $charge,
+                        $temp,
+                        'te has suscrito a ' . env('APP_NAME', 'Laravel')
+                    ));
                 }
             }
         });

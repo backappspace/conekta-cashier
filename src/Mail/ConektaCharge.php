@@ -41,7 +41,7 @@ class ConektaCharge extends Mailable
         return $this
             ->markdown('cashier::emails.spei')
             ->from(env('MAIL_FROM_ADDRESS', 'no-reply@uvealsnow.com'))
-            ->subject($this->concept ?: 'Ficha de pago SPEI '. now()->format('d-m-Y'))
+            ->subject('Ficha de pago SPEI '. now()->format('d-m-Y'))
             ->attach($this->file, [
                 'as' => 'spei_'. now()->format('d-m-Y') . '.pdf',
                 'mime' => 'application/pdf'
