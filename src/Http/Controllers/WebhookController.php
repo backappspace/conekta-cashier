@@ -14,7 +14,7 @@ class WebhookController extends Controller
     public function orderPaid(Request $request)
     {
         DB::table('tests')->insert([
-            'data' => $request->toJson()
+            'data' => json_encode($request->all())
         ]);
         //
         return response('ok');
