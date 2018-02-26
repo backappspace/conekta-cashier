@@ -122,7 +122,7 @@ class Order extends Model
             'tax' => $order->tax_lines->total,
             'shipping_cost' => $order->shipping_lines->total,
             'discount' => $order->discount_lines->total,
-            'monthly_installments' => count($order->charges) > 0 ? $order->charges->monthly_installments : 0,
+            'monthly_installments' => count($order->charges) > 0 ? $order->charges[0]->monthly_installments : 0,
             'payment_method' => count($order->charges) > 0 ? $order->charges[0]->payment_method->type : 'default',
             'status' => count($order->charges) > 0 ? $order->charges[0]->status : 'unknown',
             'tracking_number' => null,
