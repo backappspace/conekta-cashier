@@ -57,6 +57,16 @@ class Subscription extends Model
     }
 
     /**
+     * Gets the Orders related to the subscription.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class);
+    }
+
+    /**
      * Determine if the subscription is active, on trial, or within its grace period.
      *
      * @return bool
@@ -279,16 +289,6 @@ class Subscription extends Model
     }
 
      /**
-     * Updates subscription end
-     *
-     * @return array
-     */
-    public function updateSubscriptionEnd()
-    {
-        return true;
-    }
-
-     /**
      * Checks if the subscription is still valid
      *
      * @return bool
@@ -305,9 +305,27 @@ class Subscription extends Model
     *
     * @return bool
     */
-    public function shouldBeCharged()
+    public function shouldBeCharged() : bool
     {
-        return (bool) $this->status === 'active' && now()->gte($this->ends_at);
+        return $this->status == 'active' && now()->gte($this->ends_at) && !$this->alreadyCharged();
+    }
+
+    /**
+     * Checks if the subscription has been charged for the given period
+     *
+     * @param Carbon\Carbon $date = null
+     * @return boolean
+     */
+    public function alreadyCharged($date = null)
+    {
+        if (!$date) {
+            $date = $this->ends_at;
+        }
+
+        return (bool) $this->orders()
+                        ->whereBetween('created_at', [$date, $this->getNextEndDate(false, $date)])
+                        ->get()
+                        ->count() > 0;
     }
 
     /**
@@ -316,10 +334,12 @@ class Subscription extends Model
      * @param boolean $now = true
      * @return Carbon $ends_at
      */
-    public function getNextEndDate($now = true)
+    public function getNextEndDate($now = true, $special = null)
     {
         if ($now) {
             $date = now();
+        } elseif ($special) {
+            $date = $special;
         } else {
             $date = $this->ends_at;
         }
