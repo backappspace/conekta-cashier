@@ -2,10 +2,10 @@
 
 namespace UvealSnow\ConektaCashier\Controllers;
 
-use DB;
 use PDF;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use UvealSnow\ConektaCashier\Mail\ConektaCharge;
 
