@@ -55,7 +55,7 @@ class Order extends Model
         $model = new $model;
 
         // return $this->hasMany(get_class($model), $model->getForeignKey());
-        return $this->morphedByMany(get_class($model), $model->getForeignKey());
+        return $this->morphedByMany(get_class($model), 'orderable', 'order_product');
     }
 
     /**
@@ -70,7 +70,7 @@ class Order extends Model
         $model = new $model;
 
         // return $this->hasMany(get_class($model), $model->getForeignKey());
-        return $this->morphedByMany(get_class($model), $model->getForeignKey());
+        return $this->morphedByMany(get_class($model), 'orderable', 'order_product');
     }
 
     /**
