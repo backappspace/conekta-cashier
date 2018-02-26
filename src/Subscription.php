@@ -296,6 +296,17 @@ class Subscription extends Model
     public function isValid()
     {
         return (bool) ($this->onTrial() || $this->onGracePeriod()) ||
-            ($this->status === 'active' && now()->lt($this->ends_at->addDays(config('services.conekta.days_of_tolerance', 5))));
+            ($this->status === 'active' &&
+            now()->lt($this->ends_at->addDays(config('services.conekta.days_of_tolerance', 5))));
+    }
+
+    /**
+    * Checks if the subscription should be charged
+    *
+    * @return bool
+    */
+    public function shouldBeCharged()
+    {
+        return (bool) $this->status === 'active' && now()->gte($this->ends_at);
     }
 }
