@@ -4,7 +4,6 @@ namespace UvealSnow\ConektaCashier;
 
 use Conekta\Order as ConektaOrder;
 use Illuminate\Database\Eloquent\Model;
-use UvealSnow\ConektaCashier\Order;
 
 class Order extends Model
 {
@@ -114,7 +113,7 @@ class Order extends Model
      * @param Conekta\Order $order
      * @return void
      */
-    public function fillOrder(Order $order)
+    public function fillOrder(ConektaOrder $order)
     {
         $this->fill([
             'conekta_order' => $order->id,
