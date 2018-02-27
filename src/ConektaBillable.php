@@ -272,13 +272,23 @@ trait ConektaBillable
     }
 
     /**
+     * Alias for $this->onGenericTrial()
+     *
+     * @return boolean
+     */
+    public function onTrial()
+    {
+        return $this->onGenericTrial();
+    }
+
+    /**
      * Returns true if user is currently on generic trial
      *
      * @return bool
      */
-    public function onGenericTrial()
+    public function onGenericTrial() : bool
     {
-        return (bool) $this->trial_ends_at && now()->lt($this->trial_ends_at);
+        return $this->trial_ends_at && now()->lt($this->trial_ends_at);
     }
 
     /**
