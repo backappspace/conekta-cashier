@@ -104,6 +104,8 @@ class CheckSubscriptions extends Command
                         $temp,
                         'te has suscrito a ' . env('APP_NAME', 'Laravel')
                     ));
+
+                    unlink($temp);
                 }
             }
         });

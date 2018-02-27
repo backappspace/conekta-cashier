@@ -38,7 +38,7 @@ class PaymentConfirmed extends Mailable
     public function build()
     {
         return $this
-            ->markdown('mail')
+            ->markdown('cashier::emails.payment-confirmed')
             ->from(env('MAIL_FROM_ADDRESS', 'no-reply@uvealsnow.com'))
             ->subject(env('APP_NAME', 'ConektaCashier') . ": Recivo $this->order_id")
             ->attach($this->file, [
