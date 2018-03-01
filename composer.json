@@ -4,7 +4,8 @@
     "type": "library",
     "require": {
         "conekta/conekta-php": "^4.0",
-        "barryvdh/laravel-dompdf": "^0.8.2"
+        "barryvdh/laravel-dompdf": "^0.8.2",
+        "intervention/image": "*"
     },
     "license": "MIT",
     "authors": [
