@@ -9,28 +9,34 @@ use Illuminate\Support\Facades\Storage;
 trait UsesPictures
 {
     /**
-     * Morphs a picture
+     * Morphs many pictures
      *
-     * @return Picture
+     * @return UvealSnow\ConektaCashier\Picture
      */
-    public function picture()
+    public function pictures()
     {
-        return $this->morphOne(Picture::class, 'pictureable');
+        return $this->morphMany(Picture::class, 'pictureable');
     }
 
     /**
-     * Adds a picture to the Model
+     * Checks if the model has any pictures attached
+     *
+     * @return boolean
+     */
+    public function hasPictures()
+    {
+        return $this->pictures->count() > 0;
+    }
+
+    /**
+     * Adds a picture to the model and stores it in the Filesystem
      *
      * @param Image $picture
+     * @param boolean $main = false
      * @return string $url
-     * @throws TransferException
      */
-    public function addPicture($picture)
+    public function addPicture($picture, $main = false)
     {
-        if ($this->picture) {
-            $this->removePicture();
-        }
-
         $new_img = Image::make($picture);
         $file_name = uniqid(strtolower(class_basename($this)).'-', true);
 
@@ -44,52 +50,112 @@ trait UsesPictures
         $img = file_get_contents("./tmp/$file_name.jpg");
         $url = strtolower(class_basename($this))."/$file_name.jpg";
 
-        try {
-            Storage::disk('s3')->getDriver()->put(
-                $url,
-                $img,
-                ['visibility' => 'public', 'CacheControl' => 'max_age=2592000']
-            );
+        Storage::disk('s3')->getDriver()->put(
+            $url,
+            $img,
+            ['visibility' => 'public', 'CacheControl' => 'max_age=2592000']
+        );
 
-            return $url;
-        } catch (Exception $e) {
-            // Throws Transfer Exception
+        if ($main && $this->hasMainPicture()) {
+            $this->removeMainPicture();
         }
+
+        $this->pictures()->create([
+            'path' => $url,
+            'main' => $main,
+        ]);
+
+        return $url;
     }
 
     /**
-     * Determines if Model has a Picture
+     * Checks if the model has a picture marked as main
      *
      * @return boolean
      */
-    public function hasPicture()
+    public function hasMainPicture() : bool
     {
-        return (bool) $this->picture && Storage::exists($this->picture->path)
+        return $this->pictures()->where('main', true)->get() > 0;
     }
 
     /**
-     * Retrieves the picture URL from Storage
+     * Gets the picture marked as main for his model
      *
-     * @return string
+     * @param boolean $as_url
+     * @return Picture|false
      */
-    public function getPicture()
+    public function getMainPicture($as_url = false)
     {
-        if ($this->hasPicture()) {
-            return Storage::url($this->picture->path);
-        } else {
-            return Storage::url(strtolower(class_basename($this)).'/placeholder.png');
+        if ($this->hasPictures() && $this->hasMainPicture()) {
+            if ($as_url) {
+                return Storage::url($this->pictures()->where('main', true)->first()->path);
+            }
+
+            return $this->pictures()->where('main', true)->first();
         }
+
+        return false;
     }
 
     /**
-     * Removes the picture from storage
+     * Modifies the picture model to remove the main trait, optionally can delete the picture.
      *
+     * @param boolean $remove = false
      * @return void
      */
-    public function removePicture()
+    public function removeMainPicture($remove = false)
     {
-        if ($this->hasPicture()) {
-            $this->picture->delete();
+        if ($remove) {
+            $this->removePicture($this->getMainPicture());
+        } else {
+            $main = $this->getMainPicture();
+
+            $main->main = false;
+
+            $main->save();
         }
+    }
+
+    /**
+     * Removes a specific picture from storage
+     *
+     * @param Picture $picture
+     * @return void
+     */
+    public function removePicture(Picture $picture)
+    {
+        $picture->delete();
+    }
+
+    /**
+     * Removes a bunch of pictures from storage
+     *
+     * @param array $pictures
+     * @return void
+     */
+    public function removePictures($pictures)
+    {
+        foreach ($pictures as $picture) {
+            $this->removePicture($picture);
+        }
+    }
+
+    /**
+     * Transforms the relationship to a collection for display
+     *
+     * @return Collection $collection
+     */
+    public function asPictureCollection()
+    {
+        $collection = collect();
+
+        foreach ($this->pictures as $picture) {
+            $collection->push([
+                'main' => $picture->main,
+                'path' => Storage::url($picture->path)
+            ]);
+        }
+
+        return $collection;
     }
 }

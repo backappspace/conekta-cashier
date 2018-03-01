@@ -3,9 +3,12 @@
 namespace UvealSnow\ConektaCashier;
 
 use Illuminate\Database\Eloquent\Model;
+use UvealSnow\ConektaCashier\Traits\UsesPicture;
 
 class Coupon extends Model
 {
+    use UsesPicture;
+
     /**
      * The attributes that are not mass assignable.
      *

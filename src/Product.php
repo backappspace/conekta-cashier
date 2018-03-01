@@ -3,9 +3,12 @@
 namespace UvealSnow\ConektaCashier;
 
 use Illuminate\Database\Eloquent\Model;
+use UvealSnow\ConektaCashier\Traits\UsesPictures;
 
 class Product extends Model
 {
+    use UsesPictures;
+
     /**
      * The attributes that are not mass assignable.
      *
@@ -57,8 +60,10 @@ class Product extends Model
     {
         parent::boot();
 
-        static::deleting(function (Product $user) {
-            //
+        static::deleting(function (Product $product) {
+            if($product->hasPictures()) {
+                $product->picture
+            }
         });
     }
 }
