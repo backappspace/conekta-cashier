@@ -61,8 +61,8 @@ class Product extends Model
         parent::boot();
 
         static::deleting(function (Product $product) {
-            if($product->hasPictures()) {
-                $product->picture
+            if ($product->hasPictures()) {
+                $product->removePictures();
             }
         });
     }

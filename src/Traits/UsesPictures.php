@@ -130,11 +130,15 @@ trait UsesPictures
     /**
      * Removes a bunch of pictures from storage
      *
-     * @param array $pictures
+     * @param array $pictures = []
      * @return void
      */
-    public function removePictures($pictures)
+    public function removePictures($pictures = [])
     {
+        if (count($pictures) < 1) {
+            $pictures = $this->pictures();
+        }
+
         foreach ($pictures as $picture) {
             $this->removePicture($picture);
         }
