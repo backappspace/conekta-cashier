@@ -64,7 +64,7 @@ trait UsesPicture
      */
     public function hasPicture()
     {
-        return (bool) $this->picture && Storage::exists($this->picture->path)
+        return (bool) $this->picture && Storage::exists($this->picture->path);
     }
 
     /**

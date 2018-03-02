@@ -3,11 +3,12 @@
 namespace UvealSnow\ConektaCashier;
 
 use Illuminate\Database\Eloquent\Model;
+use UvealSnow\ConektaCashier\Traits\UsesTags;
 use UvealSnow\ConektaCashier\Traits\UsesPictures;
 
 class Product extends Model
 {
-    use UsesPictures;
+    use UsesPictures, UsesTags;
 
     /**
      * The attributes that are not mass assignable.
