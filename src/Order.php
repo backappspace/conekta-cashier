@@ -50,12 +50,11 @@ class Order extends Model
      */
     public function products()
     {
-        $model = getenv('CONEKTA_PRODUCT') ?: config('services.conekta.product', 'UvealSnow\\ConektaCashier\\Product');
-
-        $model = new $model;
-
-        // return $this->hasMany(get_class($model), $model->getForeignKey());
-        return $this->morphedByMany(get_class($model), 'orderable', 'order_product');
+        return $this->belongsToMany(Product::class, 'orderable')->withPivot(
+            'quantity',
+            'unit_price',
+            'details'
+        );
     }
 
     /**
