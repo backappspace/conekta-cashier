@@ -187,6 +187,7 @@ trait ConektaBillable
                 // If it's a new card
                 if (isset($paymentSource['token_id'])) {
                     // Add new Card to customer.
+                    $customer = $this->asConektaCustomer();
                     $source = $customer->createPaymentSource([
                         "token_id" => $paymentSource['token_id'],
                         "type" => "card",

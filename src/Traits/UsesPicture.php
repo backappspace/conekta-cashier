@@ -51,6 +51,8 @@ trait UsesPicture
                 ['visibility' => 'public', 'CacheControl' => 'max_age=2592000']
             );
 
+            unlink($img);
+
             return $url;
         } catch (Exception $e) {
             // Throws Transfer Exception
