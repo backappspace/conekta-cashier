@@ -51,7 +51,7 @@ trait UsesPicture
                 ['visibility' => 'public', 'CacheControl' => 'max_age=2592000']
             );
 
-            unlink($img);
+            unlink("./tmp/$file_name.jpg");
 
             return $url;
         } catch (Exception $e) {
